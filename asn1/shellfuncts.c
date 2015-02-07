@@ -40,7 +40,8 @@ char* whitespace(char* string)
 }
 
 /*
- * 
+ * Helper function that splits up the command input given by the user
+ * using the whitespace function, spilting up any optional arguements
  */
 void split(char* com)
 {
@@ -68,6 +69,11 @@ void split(char* com)
   args[i] = NULL;
 }
 
+/*
+ * Function that performs the fork to create new processes, dup2 to
+ * copy file descriptors for I/O redirection, and execvp
+ * to execute the program inputed by the user
+ */
 int command(int input, int first, int last)
 {
   int fd[2];
@@ -108,43 +114,28 @@ int command(int input, int first, int last)
   return fd[READ];
 }
 
+/*
+ * Function that executes the program inputted by the user,
+ * using the command and split functions above
+ */
 int run(char* com, int input, int first, int last)
 {
-  int n = 0;
   split(com);
   if (args[0] != NULL)
   {
+    //Exit built in command
     if (strcmp(args[0], "exit") == 0)
     {
       exit(0);
     }
+    
+    //History built in command
     else if (strcmp(args[0], "history") == 0)
     {
       // Prints list of commands
     }      
-    n = n + 1;
     return command(input, first, last);
   }
   return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
