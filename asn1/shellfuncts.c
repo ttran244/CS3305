@@ -34,16 +34,31 @@ char* whitespace(char* string)
   return string;
 }
 
-void split(char* input)
+void split(char* com)
 {
-  input = whitespace(input);
-  char* next = strchr(input,'');
+  com = whitespace(com);
+  char* next = strchr(com,' ');
   int i = 0;
 
   while (next != NULL)
   {
-    next
+    next[0] = '\0';
+    args[i] = com;
+    ++i;
+    com = whitespace(next + 1);
+    next = strchr(com, ' ');
+  }
 
+  if (com[0] != '\0')
+  {
+    args[i] = com;
+    next = strchr(com, '\n');
+    next[0] = '\0';
+    ++i;
+  }
+
+  args[i] = NULL;
+}
 
 int command(int input, int first, int last)
 {
@@ -85,7 +100,25 @@ int command(int input, int first, int last)
   return fd[READ];
 }
 
-
+int run(char* com, int input, int first, int last)
+{
+  int n = 0;
+  split(com);
+  if (args[0] != NULL)
+  {
+    if (strcmp(args[0], "exit") == 0)
+    {
+      exit(0);
+    }
+    else if (strcmp(args[0], "history") == 0)
+    {
+      // Prints list of commands
+    }      
+    n = n + 1;
+    return command(input, first, last);
+  }
+  return 0;
+}
 
 
 

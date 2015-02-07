@@ -13,45 +13,45 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <unistd.h>
+#include "shellfuncts.c"
 
-#define MAX 500
-#define NUMPIPE 2
-#define READ 0
-#define WRITE 1
-
-static char* args[MAX];
-pid_t pid;
-int command_pipe[NUMPIPE];
+#define MAXLINE 1000
 
 int main(int argc, char** argv)
 {
-    char input[MAX];
-    char name = NULL;
-    char* path = "/bin/";
+    char line[MAXLINE];
+    char name[MAXLINE];
 
-    while (name == NULL) 
+    while (name[0] == '\0') 
     {
       printf("Enter your name:\n");
-      scanf("%s", &name);
+      fgets(name, MAXLINE, stdin);
     }
+
     while (1)
     {
-      printf("%s>", &name);
-      fgets(input, MAX, stdin);
-      int pid = fork();
-      if (pid != 0)
+      printf("%s>", name[0]);
+      
+      if (!fgets(line, MAXLINE, stdin))
       {
-        wait(NULL);
-      }
-      else
-      {
-        strcat(path, input);
-        int x = execv(path, input);
+        return 0;
       }
 
+      int input = 0;
+      int first = 1;
+      char* com = line;
+      char* next = strchr(com, '|');
 
+      while (next != NULL)
+      {
+        *next = '\0';
+        input = run(com, input, first, 0);
+        com = next + 1;
+        next = strchr(com, '|');
+        first = 0;
+      }
+
+      input = run(com, input, first, 1);
     }
-  return 0;
+    return 0;
 }
