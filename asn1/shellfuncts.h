@@ -16,10 +16,6 @@
 char* whitespace(char* string);
 void split(char* input);
 int command(int input, int first, int last);
-
-
-
-
-
+int run(char* com, int input, int first, int last);
 
 #endif

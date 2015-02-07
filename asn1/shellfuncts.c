@@ -16,14 +16,19 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "shellfuncts.h"
 
 #define MAX 500
 #define READ 0
 #define WRITE 1
 
-pid_t pid;
-char* args[MAX];
+pid_t pid; // holds the pid of the process
+char* args[MAX]; // holds the arguements. 
 
+/*
+ * Helper function that finds the blank space in the command that is entered
+ * by the user
+ */
 char* whitespace(char* string)
 {
   while (isspace(*string))
@@ -34,6 +39,9 @@ char* whitespace(char* string)
   return string;
 }
 
+/*
+ * 
+ */
 void split(char* com)
 {
   com = whitespace(com);

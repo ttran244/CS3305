@@ -13,45 +13,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "shellfuncts.c"
+#include "shellfuncts.h"
 
 #define MAXLINE 1000
 
 int main(int argc, char** argv)
 {
-    char line[MAXLINE];
-    char name[MAXLINE];
-
-    while (name[0] == '\0') 
+  char line[MAXLINE];
+  char name[MAXLINE];
+  printf("Enter your name:\n");
+  fgets(name, MAXLINE, stdin);
+  
+  while (1)
+  {
+    printf("%s>", name); 
+    if (!fgets(line, MAXLINE, stdin))
     {
-      printf("Enter your name:\n");
-      fgets(name, MAXLINE, stdin);
+      return 0;
     }
-
-    while (1)
+    int input = 0;
+    int first = 1;
+    char* com = line;
+    char* next = strchr(com, '|');
+    while (next != NULL)
     {
-      printf("%s>", name[0]);
-      
-      if (!fgets(line, MAXLINE, stdin))
-      {
-        return 0;
-      }
-
-      int input = 0;
-      int first = 1;
-      char* com = line;
-      char* next = strchr(com, '|');
-
-      while (next != NULL)
-      {
-        *next = '\0';
-        input = run(com, input, first, 0);
-        com = next + 1;
-        next = strchr(com, '|');
-        first = 0;
-      }
-
-      input = run(com, input, first, 1);
+      *next = '\0';
+      input = run(com, input, first, 0);
+      com = next + 1;
+      next = strchr(com, '|');
+      first = 0;
     }
-    return 0;
+    input = run(com, input, first, 1);
+  }
+  return 0;
 }
