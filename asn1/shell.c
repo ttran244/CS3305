@@ -13,11 +13,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <unistd.h>
+
+#define MAX 500
+#define NUMPIPE 2
+#define READ 0
+#define WRITE 1
+
+static char* args[MAX];
+pid_t pid;
+int command_pipe[NUMPIPE];
 
 int main(int argc, char** argv)
 {
-    char input;
+    char input[MAX];
     char name = NULL;
+    char* path = "/bin/";
+
     while (name == NULL) 
     {
       printf("Enter your name:\n");
@@ -26,7 +39,19 @@ int main(int argc, char** argv)
     while (1)
     {
       printf("%s>", &name);
-      scanf("%s", &input);
+      fgets(input, MAX, stdin);
+      int pid = fork();
+      if (pid != 0)
+      {
+        wait(NULL);
+      }
+      else
+      {
+        strcat(path, input);
+        int x = execv(path, input);
+      }
+
+
     }
   return 0;
 }
