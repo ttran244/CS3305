@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <errno.h>
+#include <sched.h>
+#include <math.h>
 
 #define MAX 256
 #define CMD_MAX 10
@@ -43,6 +48,18 @@ int make_tokenlist(char *buf, char *tokens[])
 
 void main(void) 
 {
+  int policy;
+  struct sched_param param;
+
+  policy = SCHED_RR;
+  param.sched_priority = sched_get_priority_max(policy);
+
+  if(sched_setscheduler(0,policy,&param))
+  {
+    perror("Error setting scheduler policy");
+    exit(EXIT_FAILURE);
+  }
+
   char input_line[MAX], *tokens[CMD_MAX];
   int i, n;         
   
